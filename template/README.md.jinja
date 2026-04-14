@@ -1,0 +1,87 @@
+# {{ project_name }}
+
+{{ project_description }}
+
+
+
+## Setup
+
+### Requirements
+
+* <https://docs.astral.sh/uv/> (Python + dependency management)
+
+Python is installed and managed automatically by `uv`.
+
+### Install dependencies
+
+```bash
+$ uv sync
+```
+
+### Run 
+
+```bash
+$ uv run main
+```
+
+
+
+## Testing
+
+The project includes unit tests and hardware-aware test benches.
+
+### Run all non-hardware tests
+
+```bash
+$ uv run pytest
+```
+
+### Run an individual test file
+
+```bash
+$ uv run pytest tests/test_emulators.py
+```
+
+### Hardware-dependent tests
+
+Some tests require real devices:
+
+```bash
+$ uv run pytest tests/test_cp2112_backend.py --hardware
+```
+
+### Test coverage
+
+* `test/testbench.py`: purpose
+* `test/testbench.py`: purpose
+* `test/testbench.py`: purpose
+
+
+
+## Documentation
+
+* [Project Structure](docs/project_structure.md): repository layout and module 
+  responsibilities
+
+
+
+
+## Release
+
+Add details on how a release is produced. Typically done in CI, therefore
+descibe process by which a release build is triggered, alternatively if no CI,
+describe manual steps to build and release.
+
+
+
+## Copier Update
+
+The project uses [Copier](https://copier.readthedocs.io/en/stable/) to manage
+its template. When the template is updated, the project can be easily brought
+up to date by running the following command from the project root:
+```bash
+$ copier update --defaults --answers-file .copier-py-answers.yml
+```
+When the `--defaults` option is used, copier update skips all previously
+answered questions and prompts only for newly introduced ones.
+
