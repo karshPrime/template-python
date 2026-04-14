@@ -1,0 +1,120 @@
+
+_min_copier_version: "9.10.0"
+_subdirectory: template
+_answers_file: .copier-python-project/.copier-py-answers.yml
+
+#===============================================================================
+# Interactive
+
+# optional project description
+project_description:
+  qmark: "\n >"
+  type: str
+  help: "Project Description:"
+  placeholder: "\"\""
+  default: ""
+  when: >-
+    {{ not (
+       _folder_name.startswith('bench')
+       and _folder_name[5:].isdigit()
+     ) }}
+
+# common libraries to populate pyproject.toml with
+lib_pack:
+  qmark: "\n >"
+  help: "Library Packs:"
+  type: str
+  multiselect: true
+  choices:
+    - "- Data"      # matplotlib, numpy, pandas
+    - "- Dantic"    # pydantic
+    - "- GUI"       # pyside6
+    - "- Serial"    # pyserial
+    - "- SQL"       # SQLAlchemy
+    - "- WebServer" # fastAPI, uvicorn
+
+
+#===============================================================================
+# Deaults
+# Saved in ~/.config/copier/settings.yml
+
+author_name:
+  when: false
+
+author_email:
+  when: false
+
+github_user:
+  when: false
+
+
+#===============================================================================
+# Auto-generate
+
+# Capitalised Project Name
+project_name:
+  default: >-
+    {{
+      _folder_name
+      | trim
+      | title
+    }}
+  when: false
+
+# kebab-case-project-name
+project_slug:
+  type: str
+  default: >-
+    {{
+      _folder_name
+      | lower
+      | trim
+      | regex_replace('[^a-z0-9]+', '-')
+      | regex_replace('-+', '-')
+      | trim('-')
+    }}
+  when: false
+
+# snake_case_module_name
+module_slug:
+  type: str
+  default: >-
+    {{ project_slug | regex_replace('-', '_') }}
+  when: false
+
+# current year for licenses
+year:
+  type: int
+  default: "{{ '%Y' | strftime }}"
+  when: false
+
+
+#===============================================================================
+# Tasks
+
+_tasks:
+  - command: 'uv add matplotlib numpy pandas'
+    when: "{{ '- Data' in lib_pack }}"
+
+  - command: 'uv add pydantic'
+    when: "{{ '- Dantic' in lib_pack }}"
+
+  - command: 'uv add pyside6'
+    when: "{{ '- GUI' in lib_pack }}"
+
+  - command: 'uv add pyserial'
+    when: "{{ '- Serial' in lib_pack }}"
+
+  - command: 'uv add SQLAlchemy'
+    when: "{{ '- SQL' in lib_pack }}"
+
+  - command: 'uv add fastapi uvicorn'
+    when: "{{ '- WebServer' in lib_pack }}"
+
+  - 'uv add colorlog'
+  - 'git init'
+  - 'git branch -M main'
+  - 'git add --all'
+  - 'git commit -m "Copy from template" -m "https://github.com/karshPrime/template-python"'
+  - 'git remote add origin git@github.com:{{ github_user }}/{{ project_slug }}.git'
+
